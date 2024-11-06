@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Caixas</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #35404b;
+            min-height: 100vh;
+        }
+
+        .header {
+            background-color: #3498db;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-container {
+            background-color: #E5E7EB;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .input-field {
+            background-color: white;
+            border: 1px solid #8e9196;
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+
+        .btn {
+            transition: all 0.3s ease;
+            background-color: #61b2e9;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background-color: #2980b9;
+        }
+
+        .peca-item {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        .remove-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s;
+        }
+        .remove-btn:hover {
+            background-color: #c0392b;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1 class="text-3xl font-bold">Sistema de Gerenciamento de Caixas</h1>
+        <p class="mt-2">Cadastro de Nova Caixa</p>
+    </header>
+
+    <div class="container mx-auto px-4 py-8">
+        <div class="form-container p-6">
+            <form id="cadastroForm" class="space-y-6">
+                <div>
+                    <label for="numerocaixa" class="block text-lg font-medium text-gray-700">Número da Caixa</label>
+                    <input type="text" id="numerocaixa" name="numerocaixa" required 
+                           class="mt-1 block w-full input-field rounded-md py-2 px-3 focus:outline-none">
+                </div>
+
+                <div id="pecasContainer">
+                    <!-- As peças serão adicionadas aqui dinamicamente -->
+                </div>
+
+                <div class="flex gap-4">
+                    <button type="button" onclick="adicionarPeca()" 
+                            class="btn flex items-center px-4 py-2 rounded-md text-white">
+                        <i class="fas fa-plus mr-2"></i> Adicionar Peça
+                    </button>
+
+                    <button type="submit" 
+                            class="btn flex-grow flex justify-center items-center px-4 py-2 rounded-md text-white">
+                        <i class="fas fa-save mr-2"></i> Cadastrar Caixa
+                    </button>
+                    <button type="button" 
+                            class="btn flex-grow flex justify-center items-center px-4 py-2 rounded-md text-white" onclick="window.location.href='pagina-inicial.html'"> Voltar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        let pecaCount = 0;
+        let pecas = [];
+
+        function adicionarPeca() {
+            let nextId = getNextId();
+            const novaPeca = `
+                <div class="peca-item" id="peca${nextId}">
+                    <button type="button" class="remove-btn" onclick="removerPeca(${nextId})">X</button>
+                    <h3 class="text-lg font-semibold mb-3">Peça ${nextId}</h3>
+                    <div class="space-y-4">
+                        <div class="flex space-x-4">
+                            <div class="flex-1">
+                                <label for="numeroPeca${nextId}" class="block text-sm font-medium text-gray-700">Número da Peça</label>
+                                <input type="text" id="numeroPeca${nextId}" name="numeroPeca${nextId}" required class="mt-1 block w-full input-field rounded-md py-2 px-3 focus:outline-none">
+                            </div>
+                            <div class="flex-1">
+                                <label for="tamanho${nextId}" class="block text-sm font-medium text-gray-700">Tamanho</label>
+                                <select id="tamanho${nextId}" name="tamanho${nextId}" required class="mt-1 block w-full input-field rounded-md py-2 px-3 focus:outline-none">
+                                    <option value="">Selecione</option>
+                                    <option value="P">P</option>
+                                    <option value="M">M</option>
+                                    <option value="G">G</option>
+                                    <option value="GG">GG</option>
+                                    <option value="G1">G1</option>
+                                    <option value="G2">G2</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="flex space-x-4">
+                            <div class="flex-1">
+                                <label for="quantidade${nextId}" class="block text-sm font-medium text-gray-700">Quantidade</label>
+                                <input type="number" id="quantidade${nextId}" name="quantidade${nextId}" min="1" required class="mt-1 block w-full input-field rounded-md py-2 px-3 focus:outline-none">
+                            </div>
+                            <div class="flex-1">
+                                <label for="localizacao${nextId}" class="block text-sm font-medium text-gray-700">Localização</label>
+                                <input type="text" id="localizacao${nextId}" name="localizacao${nextId}" required class="mt-1 block w-full input-field rounded-md py-2 px-3 focus:outline-none">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('pecasContainer').insertAdjacentHTML('beforeend', novaPeca);
+            pecas.push(nextId);
+        }
+
+        function getNextId() {
+            let nextId = 1;
+            while (pecas.includes(nextId)) {
+                nextId++;
+            }
+            return nextId;
+        }
+
+        function removerPeca(id) {
+            const peca = document.getElementById(`peca${id}`);
+            if (peca) {
+                peca.remove();
+                const index = pecas.indexOf(id);
+                if (index > -1) {
+                    pecas.splice(index, 1);
+                }
+            }
+        }
+
+        // Adiciona a primeira peça automaticamente quando a página carrega
+        window.onload = function() {
+            adicionarPeca();
+        };
+
+        document.getElementById('cadastroForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            let formData = new FormData(this);
+            
+            // Adiciona as peças ao formData
+            pecas.forEach((pecaId) => {
+                formData.append('pecas[]', JSON.stringify({
+                    numero: document.getElementById(`numeroPeca${pecaId}`).value,
+                    tamanho: document.getElementById(`tamanho${pecaId}`).value,
+                    quantidade: document.getElementById(`quantidade${pecaId}`).value,
+                    localizacao: document.getElementById(`localizacao${pecaId}`).value
+                }));
+            });
+
+            fetch('salvar_caixa.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Caixa cadastrada com sucesso!');
+                    window.location.href = 'pagina-inicial.html';
+                } else {
+                    alert('Erro ao cadastrar caixa: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                alert('Erro ao enviar formulário');
+            });
+        });
+    </script>
+</body>
+</html>

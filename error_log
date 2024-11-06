@@ -1,0 +1,67 @@
+[05-Nov-2024 12:23:03 America/Fortaleza] Tentativa de login - Username: raitsjtskhd
+[05-Nov-2024 12:23:03 America/Fortaleza] Usuário encontrado: Não
+[05-Nov-2024 12:23:03 America/Fortaleza] Usuário não encontrado: raitsjtskhd
+[05-Nov-2024 12:25:10 America/Fortaleza] Tentativa de login - Username: Admin
+[05-Nov-2024 12:25:10 America/Fortaleza] Usuário encontrado: Sim
+[05-Nov-2024 12:25:10 America/Fortaleza] Senha armazenada: 123
+[05-Nov-2024 13:35:47 America/Fortaleza] Iniciando busca de dados
+[05-Nov-2024 13:35:47 America/Fortaleza] Erro ao buscar dados: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'letgru07_Login2.sua_tabela_de_caixas' doesn't exist
+[05-Nov-2024 13:38:23 America/Fortaleza] Iniciando busca de dados
+[05-Nov-2024 13:38:23 America/Fortaleza] Erro ao buscar dados: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'letgru07_Login2.sua_tabela_de_caixas' doesn't exist
+[05-Nov-2024 13:39:51 America/Fortaleza] Iniciando busca de dados
+[05-Nov-2024 13:39:51 America/Fortaleza] Erro ao buscar dados: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'letgru07_Login2.letgru07_Login2' doesn't exist
+[05-Nov-2024 21:56:03 America/Fortaleza] Tentativa de login - Username: admin
+[05-Nov-2024 21:56:03 America/Fortaleza] Usuário encontrado: Sim
+[05-Nov-2024 21:56:03 America/Fortaleza] Senha armazenada: 123
+[06-Nov-2024 09:35:49 America/Fortaleza] Tentativa de login - Username: admin
+[06-Nov-2024 09:35:49 America/Fortaleza] Usuário encontrado: Sim
+[06-Nov-2024 09:35:49 America/Fortaleza] Senha armazenada: 123
+[06-Nov-2024 12:32:38 America/Fortaleza] Tentativa de login - Username: admin
+[06-Nov-2024 12:32:39 America/Fortaleza] Usuário encontrado: Sim
+[06-Nov-2024 12:32:39 America/Fortaleza] Senha armazenada: 123
+[06-Nov-2024 13:07:16 America/Fortaleza] Tentativa de login - Username: admin
+[06-Nov-2024 13:07:16 America/Fortaleza] Usuário encontrado: Sim
+[06-Nov-2024 13:07:16 America/Fortaleza] Senha armazenada: 123
+[06-Nov-2024 14:54:41 America/Fortaleza] PHP Fatal error:  Uncaught PDOException: There is no active transaction in /home3/letgru07/public_html/salvar_caixa.php:96
+Stack trace:
+#0 /home3/letgru07/public_html/salvar_caixa.php(96): PDO->rollBack()
+#1 {main}
+  thrown in /home3/letgru07/public_html/salvar_caixa.php on line 96
+[06-Nov-2024 14:54:43 America/Fortaleza] PHP Fatal error:  Uncaught PDOException: There is no active transaction in /home3/letgru07/public_html/salvar_caixa.php:96
+Stack trace:
+#0 /home3/letgru07/public_html/salvar_caixa.php(96): PDO->rollBack()
+#1 {main}
+  thrown in /home3/letgru07/public_html/salvar_caixa.php on line 96
+[06-Nov-2024 14:55:18 America/Fortaleza] PHP Fatal error:  Uncaught PDOException: There is no active transaction in /home3/letgru07/public_html/salvar_caixa.php:96
+Stack trace:
+#0 /home3/letgru07/public_html/salvar_caixa.php(96): PDO->rollBack()
+#1 {main}
+  thrown in /home3/letgru07/public_html/salvar_caixa.php on line 96
+[06-Nov-2024 14:55:21 America/Fortaleza] PHP Fatal error:  Uncaught PDOException: There is no active transaction in /home3/letgru07/public_html/salvar_caixa.php:96
+Stack trace:
+#0 /home3/letgru07/public_html/salvar_caixa.php(96): PDO->rollBack()
+#1 {main}
+  thrown in /home3/letgru07/public_html/salvar_caixa.php on line 96
+[06-Nov-2024 14:56:49 America/Fortaleza] PHP Fatal error:  Uncaught PDOException: There is no active transaction in /home3/letgru07/public_html/salvar_caixa.php:96
+Stack trace:
+#0 /home3/letgru07/public_html/salvar_caixa.php(96): PDO->rollBack()
+#1 {main}
+  thrown in /home3/letgru07/public_html/salvar_caixa.php on line 96
+[06-Nov-2024 14:57:44 America/Fortaleza] Erro ao registrar substituição: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'field list'
+[06-Nov-2024 14:58:09 America/Fortaleza] Erro ao registrar substituição: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'field list'
+[06-Nov-2024 15:28:59 America/Fortaleza] Erro ao registrar substituição: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'letgru07_Login2.pecas_originais' doesn't exist
+[06-Nov-2024 15:43:55 America/Fortaleza] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home3/letgru07/public_html/buscar_substituicoes.php:1) in /home3/letgru07/public_html/buscar_substituicoes.php on line 5
+[06-Nov-2024 15:44:21 America/Fortaleza] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home3/letgru07/public_html/buscar_substituicoes.php:1) in /home3/letgru07/public_html/buscar_substituicoes.php on line 5
+[06-Nov-2024 16:11:33 America/Fortaleza] Tentativa de login - Username: Leandro
+[06-Nov-2024 16:11:33 America/Fortaleza] Usuário encontrado: Sim
+[06-Nov-2024 16:11:33 America/Fortaleza] Senha armazenada: 96200690
+[06-Nov-2024 17:13:55 America/Fortaleza] Tentativa de login - Username: admin
+[06-Nov-2024 17:13:55 America/Fortaleza] Usuário encontrado: Sim
+[06-Nov-2024 17:13:55 America/Fortaleza] Senha armazenada: 123
+[06-Nov-2024 17:19:00 America/Fortaleza] PHP Warning:  Undefined array key "peca_original_ quantidade" in /home3/letgru07/public_html/buscar_substituicoes.php on line 45
+[06-Nov-2024 17:19:00 America/Fortaleza] PHP Warning:  Undefined array key "peca_original_ quantidade" in /home3/letgru07/public_html/buscar_substituicoes.php on line 45
+[06-Nov-2024 17:19:00 America/Fortaleza] PHP Warning:  Undefined array key "peca_original_ quantidade" in /home3/letgru07/public_html/buscar_substituicoes.php on line 45
+[06-Nov-2024 17:19:00 America/Fortaleza] PHP Warning:  Undefined array key "peca_original_ quantidade" in /home3/letgru07/public_html/buscar_substituicoes.php on line 45
+[06-Nov-2024 17:19:00 America/Fortaleza] PHP Warning:  Undefined array key "peca_original_ quantidade" in /home3/letgru07/public_html/buscar_substituicoes.php on line 45
+[06-Nov-2024 17:19:00 America/Fortaleza] PHP Warning:  Undefined array key "peca_original_ quantidade" in /home3/letgru07/public_html/buscar_substituicoes.php on line 45
+[06-Nov-2024 17:19:00 America/Fortaleza] PHP Warning:  Undefined array key "peca_original_ quantidade" in /home3/letgru07/public_html/buscar_substituicoes.php on line 45

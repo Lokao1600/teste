@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gerenciamento de Caixas</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <style>
+/* Estilos Gerais */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f4f8;
+}
+
+/* Header */
+.header {
+    background-color: #3498db;
+    color: white;
+    padding: 2rem;
+    text-align: center;
+}
+
+/* Container */
+.container {
+    width: 100%;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Botões */
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.tab-button {
+    transition: all 0.3s ease;
+}
+
+.tab-button:hover {
+    background-color: #3498db;
+    color: white;
+}
+
+.tab-button.active {
+    background-color: #2980b9;
+    color: white;
+}
+
+/* Tabela */
+.table-container {
+    overflow-x: auto;
+    margin-top: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+}
+
+th, td {
+    padding: 16px;
+    text-align: center;
+    border: 1px solid #e2e8f0;
+    vertical-align: middle;
+}
+
+th {
+    background-color: #3498db;
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 18px;
+    letter-spacing: 0.5px;
+    border: 1px solid #2980b9;
+}
+
+thead tr {
+    border-bottom: 2px solid #2980b9;
+}
+
+tr:hover {
+    background-color: #f8fafc;
+    transition: background-color 0.3s ease;
+}
+
+td {
+    background-color: white;
+    font-size: 20px;
+    color: #2d3748;
+}
+
+/* Botões da Tabela */
+.table-button {
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    margin: 2px 4px;
+    min-width: 80px;
+}
+
+.table-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.edit-button {
+    background-color: #3498db;
+    color: white;
+}
+
+.delete-button {
+    background-color: #e74c3c;
+    color: white;
+}
+
+/* Ícones */
+.fas {
+    vertical-align: middle;
+}
+select option {
+    background-color: white;
+    color: black;
+}
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1 class="text-3xl font-bold">Sistema de Gerenciamento de Caixas</h1>
+    </header>
+
+    <div class="container min-h-full table-auto px-4 mx-auto overflow-x-auto">
+        <button onclick="window.location.href='cadastro.html'" class="btn bg-green-500 text-white py-2 px-4 rounded-full mb-5 flex items-center">
+            <i class="fas fa-plus mr-2"></i> Novo Cadastro
+        </button>
+
+        <div class="mb-6 flex space-x-2">
+    <button id="tab1" class="tab-button bg-gray-200 text-gray-700 py-2 px-4 rounded-full flex-1" onclick="showTab('dados')">
+        <i class="fas fa-list mr-2"></i> Dados Cadastrados
+    </button>
+    <button id="tab2" class="tab-button bg-gray-200 text-gray-700 py-2 px-4 rounded-full flex-1" onclick="showTab('substituicao')">
+        <i class="fas fa-exchange-alt mr-2"></i> Substituição
+    </button>
+    <button id="tab3" class="tab-button bg-gray-200 text-gray-700 py-2 px-4 rounded-full flex-1" onclick="showTab('substituicao-realizada')">
+        <i class="fas fa-check-circle mr-2"></i> Substituição Realizada
+    </button>
+</div>
+
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <div id="dados-cadastrados" class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Número da Caixa</th>
+                            <th>Envio</th>
+                            <th>Quantidade de Peças</th>
+                            <th>Nome da Peça</th>
+                            <th>Tamanho</th>
+                            <th>Quantidade</th>
+                            <th>Localização</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabela-corpo">
+                        <!-- Os dados serão inseridos aqui dinamicamente -->
+                    </tbody>
+                </table>
+            </div>
+            <div id="dados-substituicao" class="table-container hidden"></div>
+            <div id="dados-substituicao-realizada" class="table-container hidden"></div>
+        </div>
+    </div>
+
+<!-- Modal para substituição -->
+<div id="modalSubstituicao" class="modal hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
+    <div class="modal-content relative top-20 mx-auto p-5 border w-11/12 md:w-1/2 shadow-lg rounded-md bg-white">
+        <div class="flex justify-between items-center mb-6 border-b pb-4">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-800">
+                    <i class="fas fa-exchange-alt mr-2 text-blue-500"></i>
+                    Substituição de Peças
+                </h2>
+                <p class="text-gray-600 mt-2">
+                    Caixa: <span class="font-semibold text-blue-600" id="caixaAtual"></span>
+                </p>
+                <p class="text-gray-600">
+                    Total de Peças: <span class="font-semibold text-blue-600" id="totalPecasFisicas"></span>
+                </p>
+            </div>
+            <button onclick="fecharModalSubstituicao()" class="text-gray-400 hover:text-gray-600 transition-colors duration-200">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+
+        <!-- Formulário de Substituição -->
+        <div class="max-h-[60vh] overflow-y-auto pr-2" id="formularioSubstituicao">
+            <!-- Campos para cada peça serão adicionados aqui dinamicamente -->
+        </div>
+
+        <!-- Botão de Substituir -->
+        <div class="flex justify-end mt-4">
+            <button onclick="substituirPecas()" class="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors duration-200">
+                <i class="fas fa-check mr-2"></i> Substituir
+            </button>
+        </div>
+    </div>
+</div>
+
+    <script>
+let caixaIdAtual = null;
+
+function carregarDados() {
+    const dadosCadastrados = document.getElementById('dados-cadastrados');
+    dadosCadastrados.innerHTML = '<p class="text-center py-4">Carregando dados...</p>';
+
+    fetch('buscar_dados.php')
+        .then(response => response.json())
+        .then(data => {
+            console.log("Dados recebidos:", data);
+            
+            if (data.success) {
+                dadosCadastrados.innerHTML = '';
+                
+                const dadosOrdenados = data.dados.reverse();
+                
+                dadosOrdenados.forEach(item => {
+                    // Criar um div container para cada tabela
+                    const tableContainer = document.createElement('div');
+                    tableContainer.className = 'mb-8'; // Margem entre as tabelas
+                    
+                    // Criar a tabela
+                    const table = document.createElement('table');
+                    table.className = 'w-full mb-4';
+                    
+                    // Estrutura da tabela
+                    table.innerHTML = `
+                        <thead>
+                            <tr>
+                                <th nowrap>Número da Caixa</th>
+                                <th nowrap>Envio</th>
+                                <th nowrap>Quantidade de Peças</th>
+                                <th>Nome da Peça</th>
+                                <th nowrap>Tamanho</th>
+                                <th nowrap>Quantidade</th>
+                                <th nowrap>Localização</th>
+                                <th nowrap>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td nowrap rowspan="${item.pecas.numeros.length}">${item.numero_caixa}</td>
+                                <td nowrap rowspan="${item.pecas.numeros.length}">
+                                    <select onchange="atualizarEnvio(this, ${item.id})" 
+                                            class="p-1 rounded ${item.envio === 'Sim' ? 'bg-green-500 text-white' : 
+                                                               item.envio === 'Não' ? 'bg-red-600 text-white' : 
+                                                               'bg-gray-200'}">
+                                        <option value="Não" ${item.envio === 'Não' ? 'selected' : ''}>Não</option>
+                                        <option value="Sim" ${item.envio === 'Sim' ? 'selected' : ''}>Sim</option>
+                                    </select>
+                                </td>
+                                <td nowrap rowspan="${item.pecas.numeros.length}">${item.pecas.numeros.length} (Original)</td>
+                                <td >${item.pecas.numeros[0] || '-'}</td>
+                                <td nowrap>${item.pecas.tamanhos[0] || '-'}</td>
+                                <td nowrap>${item.pecas.quantidades[0] || '-'}</td>
+                                <td nowrap>${item.pecas.localizacoes[0] || '-'}</td>
+                                <td nowrap rowspan="${item.pecas.numeros.length}">
+                                    <button class="bg-green-500 text-white py-1 px-2 rounded hover:bg-green-600" 
+        onclick="substituir(${item.id}, '${item.numero_caixa}', ${item.pecas.numeros.length})">
+    <i class="fas fa-exchange-alt mr-1"></i> Substituir
+</button>
+                                </td>
+                            </tr>
+                            ${Array.from({length: item.pecas.numeros.length - 1}, (_, index) => {
+                                const i = index + 1;
+                                return `
+                                    <tr>
+                                        <td nowrap>${item.pecas.numeros[i] || '-'}</td>
+                                        <td nowrap>${item.pecas.tamanhos[i] || '-'}</td>
+                                        <td nowrap>${item.pecas.quantidades[i] || '-'}</td>
+                                        <td nowrap>${item.pecas.localizacoes[i] || '-'}</td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    `;
+                    
+                    // Adicionar a tabela ao container
+                    tableContainer.appendChild(table);
+                    // Adicionar o container ao elemento principal
+                    dadosCadastrados.appendChild(tableContainer);
+                });
+
+                if (dadosOrdenados.length === 0) {
+                    dadosCadastrados.innerHTML = `
+                        <p class="text-center py-4 text-gray-500">
+                            Nenhum dado encontrado
+                        </p>
+                    `;
+                }
+            } else {
+                dadosCadastrados.innerHTML = `
+                    <p class="text-center py-4 text-red-500">
+                        ${data.message || 'Erro ao carregar dados'}
+                    </p>
+                `;
+            }
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+            dadosCadastrados.innerHTML = `
+                <p class="text-center py-4 text-red-500">
+                    Erro ao carregar dados: ${error.message}
+                </p>
+            `;
+        });
+}
+
+function atualizarEnvio(selectElement, id) {
+    // Remover classes existentes
+    selectElement.classList.remove('bg-red-600', 'bg-green-500', 'bg-gray-200');
+    
+    // Adicionar classes baseadas na seleção
+    if (selectElement.value === 'Sim') {
+        selectElement.classList.add('bg-green-500');
+    } else if (selectElement.value === 'Não') {
+        selectElement.classList.add('bg-red-600');
+    }
+
+    // Atualizar no banco de dados
+    fetch('atualizar_envio.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            id: id,
+            envio: selectElement.value
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Alerta de sucesso
+            alert('Status de envio atualizado com sucesso!');
+        } else {
+            // Alerta de erro
+            alert('Erro ao atualizar status de envio: ' + (data.message || 'Erro desconhecido'));
+            console.error('Erro ao atualizar envio:', data.message);
+        }
+    })
+    .catch(error => {
+        // Alerta de erro de rede ou outro erro não previsto
+        alert('Erro ao comunicar com o servidor: ' + error.message);
+        console.error('Erro:', error);
+    });
+}
+function substituir(id, numeroCaixa, totalPecas) {
+    caixaIdAtual = id;
+    fetch(`buscar_detalhes_caixa.php?id=${id}`)
+        .then(response => response.json())
+        .then(data => {
+            const quantidadeTotal = data.quantidade_total;
+            document.getElementById('caixaAtual').innerText = numeroCaixa;
+            document.getElementById('totalPecasFisicas').innerText = quantidadeTotal;
+            
+            const formularioSubstituicao = document.getElementById('formularioSubstituicao');
+            formularioSubstituicao.innerHTML = ''; // Limpa o conteúdo anterior
+
+            // Criar campos para cada unidade
+            for (let i = 0; i < quantidadeTotal; i++) {
+                formularioSubstituicao.innerHTML += `
+                    <div class="bg-gray-50 rounded-lg p-4 mb-4 shadow-sm hover:shadow-md transition-shadow duration-200">
+                        <div class="flex items-center mb-3">
+                            <div class="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center mr-2">
+                                ${i + 1}
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-700">Peça ${i + 1}</h3>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Nome da Peça -->
+                            <div class="form-group">
+                                <label class="block text-gray-700 text-sm font-semibold mb-2">
+                                    <i class="fas fa-tag mr-1 text-blue-500"></i>
+                                    Nome da Peça
+                                </label>
+                                <input type="text" 
+                                       id="novoNomePeca${i}" 
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                                       required>
+                            </div>
+
+                            <!-- Tamanho da Peça -->
+                            <div class="form-group">
+                                <label class="block text-gray-700 text-sm font-semibold mb-2">
+                                    <i class="fas fa-ruler mr-1 text-blue-500"></i>
+                                    Tamanho
+                                </label>
+                                <select id="novoTamanhoPeca${i}" 
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                                        required>
+                                    <option value="">Selecione o tamanho</option>
+                                    <option value="P">P</option>
+                                    <option value="M">M</option>
+                                    <option value="G">G</option>
+                                    <option value="GG">GG</option>
+                                    <option value="G1">G1</option>
+                                    <option value="G2">G2</option>
+                                </select>
+                            </div>
+
+                            <!-- Quantidade da Peça -->
+                            <div class="form-group">
+                                <label class="block text-gray-700 text-sm font-semibold mb-2">
+                                    Quantidade
+                                </label>
+                                <input type="number" 
+                                       id="novaQuantidadePeca${i}" 
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100"
+                                       value="1" 
+                                       readonly>
+                            </div>
+
+                            <!-- Localização da Peça -->
+                            <div class="form-group">
+                                <label class="block text-gray-700 text-sm font-semibold mb-2">
+                                    Localização
+                                </label>
+                                <input type="text" 
+                                       id="novaLocalizacaoPeca${i}" 
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                                       required>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Exibir o modal
+            document.getElementById('modalSubstituicao').classList.remove('hidden');
+        });
+}
+
+function substituirPecas() {
+    if (!caixaIdAtual) {
+        alert('Erro: ID da caixa não encontrado');
+        return;
+    }
+
+    const pecas = [];
+    const formulario = document.getElementById('formularioSubstituicao');
+    const pecasElements = formulario.children;
+
+    for (let i = 0; i < pecasElements.length; i++) {
+        const nomePeca = document.getElementById(`novoNomePeca${i}`).value;
+        const tamanho = document.getElementById(`novoTamanhoPeca${i}`).value;
+        const quantidade = document.getElementById(`novaQuantidadePeca${i}`).value;
+        const localizacao = document.getElementById(`novaLocalizacaoPeca${i}`).value;
+
+        if (!nomePeca || !tamanho || !quantidade || !localizacao) {
+            alert('Por favor, preencha todos os campos para cada peça');
+            return;
+        }
+
+        pecas.push({
+            numero: nomePeca,
+            tamanho: tamanho,
+            quantidade: quantidade,
+            localizacao: localizacao
+        });
+    }
+
+    fetch('salvar_substituicao.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            caixa_id: caixaIdAtual,
+            pecas: pecas
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Resposta do servidor:', data);
+        if (data.success) {
+            // Ocultar a tabela da caixa no tab1
+            const dadosCadastrados = document.getElementById('dados-cadastrados');
+            const tabelas = dadosCadastrados.getElementsByTagName('table');
+            for (let tabela of tabelas) {
+                const primeiraLinha = tabela.querySelector('tbody tr');
+                if (primeiraLinha && primeiraLinha.cells[0].textContent === data.caixa.numero_caixa) {
+                    tabela.style.display = 'none';
+                    break;
+                }
+            }
+
+            alert('Substituição registrada com sucesso!');
+            fecharModalSubstituicao();
+
+            // Muda para a tab de substituição e carrega os dados
+            setTimeout(() => {
+                showTab('substituicao');
+                carregarSubstituicoes();
+            }, 500);
+        } else {
+            throw new Error(data.message || 'Erro desconhecido ao registrar substituição');
+        }
+    })
+    .catch(error => {
+        console.error('Erro:', error);
+        alert('Erro ao realizar substituição: ' + error.message);
+    });
+}
+
+// Função auxiliar para remover uma caixa da tabela de dados cadastrados
+function removerCaixaDadosCadastrados(caixaId) {
+    const tabela = document.getElementById('dados-cadastrados');
+    if (tabela) {
+        const caixaElement = tabela.querySelector(`[data-caixa-id="${caixaId}"]`);
+        if (caixaElement) {
+            caixaElement.remove();
+        }
+    }
+}
+
+function fecharModalSubstituicao() {
+    document.getElementById('modalSubstituicao').classList.add('hidden');
+}
+
+function confirmarSubstituicao() {
+    const formularioSubstituicao = document.getElementById('formularioSubstituicao');
+    const pecas = [];
+
+    const quantidadeTotal = parseInt(document.getElementById('totalPecasFisicas').innerText);
+
+    for (let i = 0; i < quantidadeTotal; i++) {
+        const numero = document.getElementById(`numeroPeca${i}`).value;
+        const tamanho = document.getElementById(`tamanhoPeca${i}`).value;
+        const quantidade = document.getElementById(`quantidadePeca${i}`).value;
+        const localizacao = document.getElementById(`localizacaoPeca${i}`).value;
+
+        pecas.push({ numero, tamanho, quantidade, localizacao });
+    }
+
+    fetch('substituir_pecas.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            id: caixaIdAtual,
+            pecas: pecas
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Substituição realizada com sucesso!');
+            document.getElementById('modalSubstituicao').classList.add('hidden');
+            showTab('substituicao'); // Muda para a tab de substituições
+            carregarSubstituicoes(); // Carrega as substituições atualizadas
+        } else {
+            alert('Erro ao realizar substituição: ' + (data.message || 'Erro desconhecido'));
+            console.error('Erro ao substituir peças:', data.message);
+        }
+    })
+    .catch(error => {
+        alert('Erro ao comunicar com o servidor: ' + error.message);
+        console.error('Erro:', error);
+    });
+}
+
+function carregarSubstituicoes() {
+    const dadosSubstituicao = document.getElementById('dados-substituicao');
+    if (!dadosSubstituicao) {
+        console.error('Elemento dados-substituicao não encontrado');
+        return;
+    }
+
+    fetch('buscar_substituicoes.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                dadosSubstituicao.innerHTML = '';
+
+                data.dados.forEach(item => {
+                    const totalSubstituicoes = item.pecas_substituidas.length;
+                    const table = document.createElement('table');
+                    table.className = 'w-full mb-4 border-collapse';
+
+                    table.innerHTML = `
+                        <thead>
+                            <tr>
+                                <th class="border px-4 py-2">Número da Caixa</th>
+                                <th class="border px-4 py-2">Envio</th>
+                                <th class="border px-4 py-2">Quantidade de Peças</th>
+                                <th class="border px-4 py-2">Nome da Peça</th>
+                                <th class="border px-4 py-2">Tamanho</th>
+                                <th class="border px-4 py-2">Quantidade</th>
+                                <th class="border px-4 py-2">Localização</th>
+                                <th class="border px-4 py-2">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="border px-4 py-2" rowspan="${totalSubstituicoes + 2}">${item.numero_caixa}</td>
+                                <td class="border px-4 py-2" rowspan="${totalSubstituicoes + 2}">
+                                    <select disabled class="p-1 rounded ${item.envio === 'Sim' ? 'bg-green-500' : 'bg-red-600'} text-white">
+                                        <option value="${item.envio}" selected>${item.envio}</option>
+                                    </select>
+                                </td>
+                                <td class="border px-4 py-2">${item.pecas.length} (Original)</td>
+                                <td class="border px-4 py-2">${item.pecas[0].numero}</td>
+                                <td class="border px-4 py-2">${item.pecas[0].tamanho}</td>
+                                <td class="border px-4 py-2">${item.pecas[0].quantidade}</td>
+                                <td class="border px-4 py-2">${item.pecas[0].localizacao}</td>
+                            <tr>
+                                <td class="border px-4 py-2 bg-gray-200 text-center font-bold" colspan="5">Substituição</td>
+                            </tr>
+                            <tr>
+                                <td class="border px-4 py-2" rowspan="${totalSubstituicoes}">${totalSubstituicoes} (Substituição)</td>
+                                ${item.pecas_substituidas.map((peca, index) => `
+                                    ${index === 0 ? `
+                                        <td class="border px-4 py-2">${peca.numero}</td>
+                                        <td class="border px-4 py-2">${peca.tamanho}</td>
+                                        <td class="border px-4 py-2">${peca.quantidade}</td>
+                                        <td class="border px-4 py-2">${peca.localizacao}</td>
+                                    ` : ''}
+                                `).join('')}
+                            </tr>
+                            ${item.pecas_substituidas.slice(1).map(peca => `
+                                <tr>
+                                    <td class="border px-4 py-2">${peca.numero}</td>
+                                    <td class="border px-4 py-2">${peca.tamanho}</td>
+                                    <td class="border px-4 py-2">${peca.quantidade}</td>
+                                    <td class="border px-4 py-2">${peca.localizacao}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    `;
+
+                    dadosSubstituicao.appendChild(table);
+                });
+            } else {
+                dadosSubstituicao.innerHTML = `
+                    <p class="text-center py-4 text-gray-500">
+                        ${data.message || 'Nenhuma substituição encontrada'}
+                    </p>
+                `;
+            }
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+            dadosSubstituicao.innerHTML = `
+                <p class="text-center py-4 text-red-500">
+                    Erro ao carregar substituições: ${error.message}
+                </p>
+            `;
+        });
+}
+
+function removerCaixaDadosCadastrados(caixaId) {
+    const dadosCadastrados = document.getElementById('dados-cadastrados');
+    const caixaElement = dadosCadastrados.querySelector(`[data-caixa-id="${caixaId}"]`);
+    if (caixaElement) {
+        caixaElement.remove();
+    }
+}
+
+function adicionarCaixaSubstituicao(caixa, tabelaCorpo) {
+    // Para cada peça na caixa, criamos uma linha
+    caixa.pecas.forEach((peca, index) => {
+        const linha = document.createElement('tr');
+        
+        // Se for a primeira peça, incluímos as informações da caixa
+        if (index === 0) {
+            linha.innerHTML = `
+                <td rowspan="${caixa.pecas.length}">${caixa.numero_caixa}</td>
+                <td rowspan="${caixa.pecas.length}">
+                    <select onchange="atualizarEnvio(this, ${caixa.id})" 
+                            class="p-1 rounded ${caixa.envio === 'Sim' ? 'bg-green-500 text-white' : 
+                                           caixa.envio === 'Não' ? 'bg-red-600 text-white' : 
+                                           'bg-gray-200'}">
+                        <option value="Não" ${caixa.envio === 'Não' ? 'selected' : ''}>Não</option>
+                        <option value="Sim" ${caixa.envio === 'Sim' ? 'selected' : ''}>Sim</option>
+                    </select>
+                </td>
+                <td rowspan="${caixa.pecas.length}">${caixa.pecas.length} (Original)</td>
+                <td>${peca.numero}</td>
+                <td>${peca.tamanho}</td>
+                <td>${peca.quantidade}</td>
+                <td>${peca.localizacao}</td>
+                <td rowspan="${caixa.pecas.length}">
+                    <button onclick="finalizarSubstituicao(${caixa.id})" 
+                            class="bg-green-500 text-white py-1 px-2 rounded hover:bg-green-600">
+                        <i class="fas fa-check"></i> Finalizar
+                    </button>
+                </td>
+            `;
+        } else {
+            linha.innerHTML = `
+                <td>${peca.numero}</td>
+                <td>${peca.tamanho}</td>
+                <td>${peca.quantidade}</td>
+                <td>${peca.localizacao}</td>
+            `;
+        }
+        
+        tabelaCorpo.appendChild(linha);
+    });
+
+    // Adicionar linha de separação após cada caixa
+    const linhaSeparadora = document.createElement('tr');
+    linhaSeparadora.innerHTML = `<td colspan="8" class="border-t-2 border-gray-300"></td>`;
+    tabelaCorpo.appendChild(linhaSeparadora);
+}
+
+function finalizarSubstituicao(caixaId) {
+    // Aqui, você deve buscar a tabela de substituições e coletar os dados
+    const tabelaSubstituicao = document.getElementById('dados-substituicao');
+    const tabelaRealizada = document.getElementById('dados-substituicao-realizada ');
+
+    // Coletar os dados da tabela de substituição
+    const dados = Array.from(tabelaSubstituicao.rows).map(row => {
+        return {
+            numero_caixa: row.cells[0].innerText,
+            pecas: row.cells[1].innerText,
+            pecas_substituidas: row.cells[2].innerText
+        };
+    });
+
+    // Adicionar os dados à tabela de substituição realizada
+    dados.forEach(dado => {
+        const newRow = tabelaRealizada.insertRow();
+        newRow.insertCell(0).innerText = dado.numero_caixa;
+        newRow.insertCell(1).innerText = dado.pecas;
+        newRow.insertCell(2).innerText = dado.pecas_substituidas;
+    });
+
+    // Opcional: Remover os dados da tabela de substituição
+    while (tabelaSubstituicao.rows.length > 0) {
+        tabelaSubstituicao.deleteRow(0);
+    }
+}
+
+function showTab(tabName) {
+    const tabs = {
+        'dados': 'dados-cadastrados',
+        'substituicao': 'dados-substituicao',
+        'substituicao-realizada': 'dados-substituicao-realizada'
+    };
+
+    // Esconde todas as divs de conteúdo
+    Object.values(tabs).forEach(id => {
+        const element = document.getElementById(id);
+        if (element) element.classList.add('hidden');
+    });
+
+    // Remove a classe active de todas as tabs
+    document.querySelectorAll('.tab-button').forEach(tab => {
+        tab.classList.remove('active', 'bg-blue-500', 'text-white');
+        tab.classList.add('bg-gray-200', 'text-gray-700');
+    });
+
+    // Mostra a div selecionada e ativa a tab correspondente
+    const contentId = tabs[tabName];
+    const tabId = `tab${Object.keys(tabs).indexOf(tabName) + 1}`;
+
+    const contentElement = document.getElementById(contentId);
+    const tabElement = document.getElementById(tabId);
+
+    if (contentElement) contentElement.classList.remove('hidden');
+    if (tabElement) {
+        tabElement.classList.add('active', 'bg-blue-500', 'text-white');
+        tabElement.classList.remove('bg-gray-200', 'text-gray-700');
+    }
+
+    // Log para debug
+    console.log(`Tab '${tabName}' clicked. Content ID: ${contentId}, Tab ID: ${tabId}`);
+    console.log(`Content element found: ${!!contentElement}, Tab element found: ${!!tabElement}`);
+    if (tabName === 'substituicao') {
+        carregarSubstituicoes();
+    }
+}
+window.onload = function() {
+    showTab('dados'); // Ativa a primeira tab por padrão
+    carregarDados(); // Carrega os dados iniciais
+};
+    </script>
+</body>
+</html>
