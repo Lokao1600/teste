@@ -65,3 +65,6 @@ Stack trace:
 [06-Nov-2024 17:19:00 America/Fortaleza] PHP Warning:  Undefined array key "peca_original_ quantidade" in /home3/letgru07/public_html/buscar_substituicoes.php on line 45
 [06-Nov-2024 17:19:00 America/Fortaleza] PHP Warning:  Undefined array key "peca_original_ quantidade" in /home3/letgru07/public_html/buscar_substituicoes.php on line 45
 [06-Nov-2024 17:19:00 America/Fortaleza] PHP Warning:  Undefined array key "peca_original_ quantidade" in /home3/letgru07/public_html/buscar_substituicoes.php on line 45
+[06-Nov-2024 18:53:09 America/Fortaleza] Tentativa de login - Username: admin
+[06-Nov-2024 18:53:09 America/Fortaleza] Usuário encontrado: Sim
+[06-Nov-2024 18:53:09 America/Fortaleza] Senha armazenada: 123

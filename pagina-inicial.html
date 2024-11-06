@@ -274,9 +274,9 @@ function carregarDados() {
                                 <td nowrap>${item.pecas.localizacoes[0] || '-'}</td>
                                 <td nowrap rowspan="${item.pecas.numeros.length}">
                                     <button class="bg-green-500 text-white py-1 px-2 rounded hover:bg-green-600" 
-        onclick="substituir(${item.id}, '${item.numero_caixa}', ${item.pecas.numeros.length})">
-    <i class="fas fa-exchange-alt mr-1"></i> Substituir
-</button>
+                                            onclick="substituir(${item.id}, '${item.numero_caixa}', ${item.pecas.numeros.length})">
+                                        <i class="fas fa-exchange-alt mr-1"></i> Substituir
+                                    </button>
                                 </td>
                             </tr>
                             ${Array.from({length: item.pecas.numeros.length - 1}, (_, index) => {
@@ -608,7 +608,7 @@ function carregarSubstituicoes() {
                                 <th class="border px-4 py-2">Tamanho</th>
                                 <th class="border px-4 py-2">Quantidade</th>
                                 <th class="border px-4 py-2">Localização</th>
-                                <th class="border px-4 py-2">Status</th>
+                                <th class="border px-4 py-2">Ações</th> <!-- Nova coluna para ações -->
                             </tr>
                         </thead>
                         <tbody>
@@ -624,6 +624,13 @@ function carregarSubstituicoes() {
                                 <td class="border px-4 py-2">${item.pecas[0].tamanho}</td>
                                 <td class="border px-4 py-2">${item.pecas[0].quantidade}</td>
                                 <td class="border px-4 py-2">${item.pecas[0].localizacao}</td>
+                                <td class="border px-4 py-2" rowspan="${totalSubstituicoes + 2}">
+                                    <button class="bg-green-500 text-white py-1 px-2 rounded hover:bg-green-600" 
+                                        onclick="finalizarSubstituicao(${item.id})">
+                                        <i class="fas fa-check"></i> Finalizar
+                                    </button>
+                                </td>
+                            </tr>
                             <tr>
                                 <td class="border px-4 py-2 bg-gray-200 text-center font-bold" colspan="5">Substituição</td>
                             </tr>
@@ -633,7 +640,7 @@ function carregarSubstituicoes() {
                                     ${index === 0 ? `
                                         <td class="border px-4 py-2">${peca.numero}</td>
                                         <td class="border px-4 py-2">${peca.tamanho}</td>
-                                        <td class="border px-4 py-2">${peca.quantidade}</td>
+                                        <td class="border px- 4 py-2">${peca.quantidade}</td>
                                         <td class="border px-4 py-2">${peca.localizacao}</td>
                                     ` : ''}
                                 `).join('')}
@@ -669,14 +676,6 @@ function carregarSubstituicoes() {
         });
 }
 
-function removerCaixaDadosCadastrados(caixaId) {
-    const dadosCadastrados = document.getElementById('dados-cadastrados');
-    const caixaElement = dadosCadastrados.querySelector(`[data-caixa-id="${caixaId}"]`);
-    if (caixaElement) {
-        caixaElement.remove();
-    }
-}
-
 function adicionarCaixaSubstituicao(caixa, tabelaCorpo) {
     // Para cada peça na caixa, criamos uma linha
     caixa.pecas.forEach((peca, index) => {
@@ -701,8 +700,7 @@ function adicionarCaixaSubstituicao(caixa, tabelaCorpo) {
                 <td>${peca.quantidade}</td>
                 <td>${peca.localizacao}</td>
                 <td rowspan="${caixa.pecas.length}">
-                    <button onclick="finalizarSubstituicao(${caixa.id})" 
-                            class="bg-green-500 text-white py-1 px-2 rounded hover:bg-green-600">
+                    <button onclick="finalizarSubstituicao()" class="bg-green-500 text-white py-1 px-2 rounded hover:bg-green-600">
                         <i class="fas fa-check"></i> Finalizar
                     </button>
                 </td>
@@ -725,19 +723,34 @@ function adicionarCaixaSubstituicao(caixa, tabelaCorpo) {
     tabelaCorpo.appendChild(linhaSeparadora);
 }
 
-function finalizarSubstituicao(caixaId) {
-    // Aqui, você deve buscar a tabela de substituições e coletar os dados
+function finalizarSubstituicao() {
     const tabelaSubstituicao = document.getElementById('dados-substituicao');
-    const tabelaRealizada = document.getElementById('dados-substituicao-realizada ');
+    const tabelaRealizada = document.getElementById('dados-substituicao-realizada');
+
+    // Verifica se a tabela de substituição existe
+    if (!tabelaSubstituicao) {
+        console.error('Tabela de substituição não encontrada.');
+        return;
+    }
+
+    // Verifica se existem linhas na tabela
+    if (tabelaSubstituicao.rows.length === 0) {
+        console.warn('A tabela de substituição está vazia.');
+        return;
+    }
 
     // Coletar os dados da tabela de substituição
     const dados = Array.from(tabelaSubstituicao.rows).map(row => {
-        return {
-            numero_caixa: row.cells[0].innerText,
-            pecas: row.cells[1].innerText,
-            pecas_substituidas: row.cells[2].innerText
-        };
-    });
+        // Verifica se a linha contém células
+        if (row.cells.length > 0) {
+            return {
+                numero_caixa: row.cells[0].innerText,
+                pecas: row.cells[1].innerText,
+                pecas_substituidas: row.cells[2].innerText
+            };
+        }
+        return null; // Retorna null se a linha não tiver células
+    }).filter(Boolean); // Remove entradas null
 
     // Adicionar os dados à tabela de substituição realizada
     dados.forEach(dado => {
